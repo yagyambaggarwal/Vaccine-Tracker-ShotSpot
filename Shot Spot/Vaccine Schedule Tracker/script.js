@@ -1,0 +1,117 @@
+// ---- Dummy backend response ----
+const hospitalData = {
+  name: "City Hospital",
+  location: "Delhi",
+  contact: "011-12345678",
+  incharge: "Dr. Sharma"
+};
+
+const childrenData = [
+  { uuid: "CHILD001", name: "Aarav", dob: "2023-06-15" },
+  { uuid: "CHILD002", name: "Riya", dob: "2024-01-20" }
+];
+
+// Vaccine Schedule Template (weeks offset or months offset)
+const vaccineSchedule = [
+  { label: "BCG", at: { weeks: 0 } },
+  { label: "OPV 0", at: { weeks: 0 } },
+  { label: "Hep B 0", at: { weeks: 0 } },
+  { label: "OPV 1", at: { weeks: 6 } },
+  { label: "Pentavalent 1", at: { weeks: 6 } },
+  { label: "RVV 1", at: { weeks: 6 } },
+  { label: "FIPV 1", at: { weeks: 6 } },
+  { label: "PCV 1", at: { weeks: 6 } },
+  { label: "OPV 2", at: { weeks: 10 } },
+  { label: "Pentavalent 2", at: { weeks: 10 } },
+  { label: "RVV 2", at: { weeks: 10 } },
+  { label: "OPV 3", at: { weeks: 14 } },
+  { label: "Pentavalent 3", at: { weeks: 14 } },
+  { label: "FIPV 2", at: { weeks: 14 } },
+  { label: "RVV 3", at: { weeks: 14 } },
+  { label: "PCV 2", at: { weeks: 14 } },
+  { label: "MR 1", at: { months: 9 } },
+  { label: "PCV Booster", at: { months: 9 } },
+  { label: "JE 1", at: { months: 9 } },
+  { label: "MR 2", at: { months: 16 } },
+  { label: "JE 2", at: { months: 16 } },
+  { label: "DBT Booster 1", at: { months: 16 } },
+  { label: "OPV Booster", at: { months: 16 } },
+  { label: "DPT Booster 2", at: { years: 5 } }
+];
+
+// ---- Render Hospital Info ----
+const hospitalDiv = document.getElementById("hospital-info");
+hospitalDiv.innerHTML = `
+  <h2>${hospitalData.name}</h2>
+  <p><b>Location:</b> ${hospitalData.location}</p>
+  <p><b>Contact:</b> ${hospitalData.contact}</p>
+  <p><b>Incharge:</b> ${hospitalData.incharge}</p>
+`;
+
+// ---- Render Child List ----
+const childListDiv = document.getElementById("child-list");
+childrenData.forEach(child => {
+  const card = document.createElement("div");
+  card.className = "child-card";
+  card.innerHTML = `
+    <span><b>${child.name}</b> (UUID: ${child.uuid}, DOB: ${child.dob})</span>
+    <button onclick="showVaccines('${child.uuid}')">Check Vaccine Schedule</button>
+  `;
+  childListDiv.appendChild(card);
+});
+
+// ---- Date Helpers ----
+function addTimeToDOB(dob, schedule) {
+  const date = new Date(dob);
+  if (schedule.weeks) date.setDate(date.getDate() + schedule.weeks * 7);
+  if (schedule.months) date.setMonth(date.getMonth() + schedule.months);
+  if (schedule.years) date.setFullYear(date.getFullYear() + schedule.years);
+  return date.toISOString().split("T")[0];
+}
+
+// ---- Show Vaccine Schedule ----
+function showVaccines(uuid) {
+  const child = childrenData.find(c => c.uuid === uuid);
+  const section = document.getElementById("vaccine-section");
+  section.innerHTML = `
+    <h2>Vaccine Schedule for ${child.name} (UUID: ${child.uuid})</h2>
+    <table class="vaccine-table">
+      <thead>
+        <tr><th>Vaccine</th><th>Scheduled Date</th><th>Date Applied</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        ${vaccineSchedule.map(vac => {
+          const dueDate = addTimeToDOB(child.dob, vac.at);
+          return `
+            <tr>
+              <td>${vac.label}</td>
+              <td>${dueDate}</td>
+              <td><input type="date" onchange="checkStatus(this, '${dueDate}')"></td>
+              <td class="status-cell"></td>
+            </tr>
+          `;
+        }).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+// ---- Status Calculation ----
+function checkStatus(input, dueDate) {
+  const applied = input.value;
+  if (!applied) return;
+  const td = input.parentElement.nextElementSibling;
+  const appliedDate = new Date(applied);
+  const due = new Date(dueDate);
+
+  if (appliedDate < due) {
+    td.textContent = "Before Due";
+    td.className = "status before";
+  } else if (appliedDate.getTime() === due.getTime()) {
+    td.textContent = "On Time";
+    td.className = "status ontime";
+  } else {
+    td.textContent = "After Due";
+    td.className = "status after";
+  }
+}

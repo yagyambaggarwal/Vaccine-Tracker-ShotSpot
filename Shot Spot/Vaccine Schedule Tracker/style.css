@@ -1,0 +1,85 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #f5f7fa;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+}
+
+.hospital-card {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.child-list {
+  margin-top: 20px;
+}
+
+.child-card {
+  background: #fff;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #3498db;
+  color: white;
+}
+
+button:hover {
+  background: #2980b9;
+}
+
+.vaccine-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.vaccine-table th,
+.vaccine-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.vaccine-table th {
+  background: #2c3e50;
+  color: white;
+}
+
+.status {
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.before {
+  background: yellow;
+  color: #333;
+}
+
+.ontime {
+  background: lightgreen;
+  color: #333;
+}
+
+.after {
+  background: #e74c3c;
+  color: white;
+}
